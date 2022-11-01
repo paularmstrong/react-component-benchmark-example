@@ -1,41 +1,43 @@
 'use client';
-import { createRef, useReducer, useState } from 'react';
-import Benchmark, { BenchmarkType } from 'react-component-benchmark';
+import * as React from 'react';
+import { Benchmark } from 'react-component-benchmark';
+import type { BenchmarkRef, BenchResultsType, BenchmarkType } from 'react-component-benchmark';
 import Results from '../components/Result';
-import TestCases from '../components/TestCases';
+import { TestCases, TestCase } from '../components/TestCases';
+import type { ResultEntry } from '../components/Result';
 import '../components/styles.css';
 
 export default function BenchmarkHome() {
-  const benchmarkRef = createRef();
-  const [benchmarkType, setBenchmarkType] = useState(BenchmarkType.MOUNT);
-  const [componentName, setComponent] = useState(Object.keys(TestCases)[0]);
-  const [samples, setSamples] = useState(50);
-  const [running, setRunning] = useState(false);
-  const [results, dispatch] = useReducer(resultsReducer, []);
+  const benchmarkRef = React.createRef<BenchmarkRef>();
+  const [benchmarkType, setBenchmarkType] = React.useState<BenchmarkType>('mount');
+  const [componentName, setComponent] = React.useState<TestCase>('Tree');
+  const [samples, setSamples] = React.useState(50);
+  const [running, setRunning] = React.useState(false);
+  const [results, dispatch] = React.useReducer(resultsReducer, [] as Array<ResultEntry>);
 
-  const handleComplete = (result) => {
+  const handleComplete = (result: BenchResultsType) => {
     dispatch({ result, type: benchmarkType, component: componentName });
     setRunning(false);
   };
 
-  const handleChangeComponent = (event) => {
-    setComponent(event.target.value);
+  const handleChangeComponent = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setComponent(event.target.value as TestCase);
   };
 
-  const handleChangeType = (event) => {
-    setBenchmarkType(event.target.value);
+  const handleChangeType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setBenchmarkType(event.target.value as BenchmarkType);
   };
 
   const handleStart = () => {
     setRunning(true);
-    benchmarkRef.current.start();
+    benchmarkRef.current?.start();
   };
 
   const handleClear = () => {
     dispatch('CLEAR');
   };
 
-  const handleChangeSamples = (event) => {
+  const handleChangeSamples = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
     if (!isNaN(value)) {
       setSamples(value);
@@ -60,7 +62,7 @@ export default function BenchmarkHome() {
             <label>
               Benchmark type
               <select disabled={running} onChange={handleChangeType}>
-                {Object.keys(BenchmarkType).map((name) => (
+                {['mount', 'update', 'unmoun'].map((name) => (
                   <option key={name}>{name.toLowerCase()}</option>
                 ))}
               </select>
@@ -70,8 +72,9 @@ export default function BenchmarkHome() {
               <input
                 disabled={running}
                 type="number"
-                min={20}
-                max={100}
+                min={25}
+                max={1000}
+                step={25}
                 value={samples}
                 onChange={handleChangeSamples}
               />
@@ -79,10 +82,7 @@ export default function BenchmarkHome() {
             <button disabled={running} onClick={handleStart}>
               Start
             </button>
-            <button
-              disabled={running || results.length === 0}
-              onClick={handleClear}
-            >
+            <button disabled={running || results.length === 0} onClick={handleClear}>
               Clear
             </button>
           </div>
@@ -108,21 +108,17 @@ export default function BenchmarkHome() {
       </div>
       <div className="attribution">
         <h1 className="title">
-          <a href="https://github.com/paularmstrong/react-component-benchmark">
-            React Component Benchmark
-          </a>
+          <a href="https://github.com/paularmstrong/react-component-benchmark">React Component Benchmark</a>
         </h1>
-        Created with 💙 by{' '}
-        <a href="https://paularmstrong.dev">Paul Armstrong</a>
+        Created with 💙 by <a href="https://paularmstrong.dev">Paul Armstrong</a>
       </div>
     </div>
   );
 }
 
-function resultsReducer(state = [], results) {
+function resultsReducer(state: Array<ResultEntry>, results: 'CLEAR' | ResultEntry) {
   if (results === 'CLEAR') {
     return [];
   }
-  state.push(results);
-  return state;
+  return [...state, results];
 }

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 // This is intentionally slow
 // Do not optimize
-function slowFibonacci(num) {
+function slowFibonacci(num: number): number {
 	if (num < 2) {
 		return num;
 	}
@@ -50,25 +50,22 @@ export function Tree({ breadth = 2, depth = 7, i = 0 }) {
 				flexDirection: i % 2 ? 'column' : 'row',
 				background: colors[(depth + i) % colors.length],
 				padding: 4,
-				margin: 4
+				margin: 4,
 			}}
 		>
 			{Array.from({ length: breadth }).map((_, i) => (
-				<Tree
-					key={`${breadth}-${depth}-${i}`}
-					breadth={breadth}
-					depth={depth - 1}
-					i={i}
-				/>
+				<Tree key={`${breadth}-${depth}-${i}`} breadth={breadth} depth={depth - 1} i={i} />
 			))}
 		</div>
 	) : null;
 }
 
-export default {
+export const TestCases = {
 	Tree: { component: Tree, props: {} },
 	'Slow mount': { component: SlowMount, props: {} },
 	'Slow mount & update': { component: SlowAll, props: {} },
 	'Slow unmount': { component: SlowUnmount, props: {} },
-	'Fast all': { component: Fast, props: {} }
-};
+	'Fast all': { component: Fast, props: {} },
+} as const;
+
+export type TestCase = keyof typeof TestCases;

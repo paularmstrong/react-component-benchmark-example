@@ -12,7 +12,7 @@
   "dependencies": {
     "next": "^13",
     "react": "^18",
-    "react-component-benchmark": "^1",
+    "react-component-benchmark": "alpha",
     "react-dom": "^18"
   },
   "devDependencies": {

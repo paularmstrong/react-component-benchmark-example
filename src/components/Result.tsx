@@ -1,6 +1,14 @@
 import * as React from 'react';
+import type { TestCase } from './TestCases';
+import type { BenchResultsType, BenchmarkType } from 'react-component-benchmark';
 
-export default function Results({ results }) {
+export interface ResultEntry {
+	result: BenchResultsType;
+	type: BenchmarkType;
+	component: TestCase;
+}
+
+export default function Results({ results }: { results: Array<ResultEntry> }) {
 	return (
 		<table>
 			<thead>
@@ -18,7 +26,7 @@ export default function Results({ results }) {
 	);
 }
 
-export function Result({ component, index, result, type }) {
+export function Result({ component, index, result, type }: ResultEntry & { index: number }) {
 	return (
 		<tbody>
 			<tr>
@@ -31,7 +39,7 @@ export function Result({ component, index, result, type }) {
 				<td>
 					{result.mean.toFixed(3)}ms (±{result.stdDev.toFixed(3)}ms)
 				</td>
-				<td>{result.layout.mean.toFixed(3)}ms</td>
+				<td>{result.layout?.mean.toFixed(3)}ms</td>
 				<td>{result.p95.toFixed(3)}ms</td>
 				<td>{result.p99.toFixed(3)}ms</td>
 			</tr>
