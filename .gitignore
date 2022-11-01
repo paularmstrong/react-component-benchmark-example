@@ -10,6 +10,7 @@
 node_modules/*
 dist/*
 out/*
+build/*
 *.log
 coverage/*
 .coveralls.yml
