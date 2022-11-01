@@ -22,10 +22,10 @@ export function Result({ component, index, result, type }) {
 	return (
 		<tbody>
 			<tr>
-				<th colSpan="3">
+				<th colSpan={3}>
 					Run {index}: {type} - {component}
 				</th>
-				<th colSpan="1">{result.sampleCount} samples</th>
+				<th colSpan={1}>{result.sampleCount} samples</th>
 			</tr>
 			<tr>
 				<td>
