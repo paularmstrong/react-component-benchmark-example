@@ -60,7 +60,7 @@ export default function BenchmarkHome() {
           <label>
             Benchmark type
             <select disabled={running} onChange={handleChangeType}>
-              {['mount', 'update', 'unmoun'].map((name) => (
+              {['mount', 'update', 'unmount'].map((name) => (
                 <option key={name}>{name.toLowerCase()}</option>
               ))}
             </select>
